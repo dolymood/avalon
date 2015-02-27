@@ -1,15 +1,20 @@
 # Avalon
 
-A lightweight、high-performance and easy-to-follow javascript MVVM framework
+A lightweight,high-performance and easy-to-learn javascript MVVM framework
 
-* Avalon now has 3 versions: `avalon.js` for IE6+ and modern browsers (including Webkit/Chromium based browsers), `avalon.modern.js` for IE10+ and HTML5 standard browsers and `avalon.mobile.js`, which added `Touch Event`, `Pointer Event` and `fastclick` support for mobile devices. For requirejs or amd-like loader, use the corresponding shim version.
-* The component libraries are now maintained by [Qunar UED(Chinese page)](http://ued.qunar.com/). First here's the three pillars: 1、[mmRouter](https://github.com/RubyLouvre/mmRouter) for router, [mmAnimate](https://github.com/RubyLouvre/mmAnimate) for animation, [mmRequest](https://github.com/RubyLouvre/mmRequest) for AJAX utils; and the UI component OniUI, you can check it out [at here](https://github.com/RubyLouvre/avalon.oniui)
-* The test cases are in a individual repository: [avalon.test](https://github.com/RubyLouvre/avalon.test)
+* Avalon now has 3 versions: `avalon.js` for IE6+ and modern browsers (including Webkit/Chromium based browsers), `avalon.modern.js` for IE10+ and HTML5 standard browsers and `avalon.mobile.js`, which added `Touch Event`, `Pointer Event` and `fastclick` support for mobile devices. For requirejs or AMD-like loader, use the corresponding shim version.
+* The component libraries are now maintained by [Qunar UED(Chinese page)](http://ued.qunar.com/). First here are the three pillars: 1. [mmRouter](https://github.com/RubyLouvre/mmRouter) for router, 2. [mmAnimate](https://github.com/RubyLouvre/mmAnimate) for animation, 3. [mmRequest](https://github.com/RubyLouvre/mmRequest) for AJAX utils; and the UI component OniUI, you can check it out [at here](https://github.com/RubyLouvre/avalon.oniui)
+* The test cases are in an individual repository: [avalon.test](https://github.com/RubyLouvre/avalon.test)
 
+## HomePage
+  [http://avalonjs.github.io/](http://avalonjs.github.io/)
+
+  [Fork it](https://github.com/avalonjs/avalonjs.github.io)
+ 
 ## Advantages
 
-    One absolute advantage is that the framework eliminated 
-    couplings and set developers free from varies of 
+    One absolute advantage is that the framework eliminates
+    couplings and frees developers from varies of
     complex event handling.
 
     For example, one state could be effected by the order 
@@ -21,24 +26,24 @@ A lightweight、high-performance and easy-to-follow javascript MVVM framework
     By using these sort of framework, one can totally reduce the 
     difficulty of app development, and make the code more robust.
 
-    Besides, it also set developers free of the repeated tasks, 
+    Besides, it also frees developers from the repeated tasks,
     like `{value}` directive can simply replace 
     `$(selector).text(value)`, what's more, some common directive
-    can also implement some logic swiftly.
+    can also implement some logics swiftly.
 
 Here are some of the benefits:
 
-* Easy to use. You just add binding code in HTML code, then define ViewModels in JavaScript code, finally invoke `avalon.scan()`, enjoy!
+* Easy to use. Just add binding code in HTML, then define ViewModels in JavaScript code, finally invoke `avalon.scan()`, enjoy!
 * Compatible with IE6+ (*Very Important* in China at present / Others: KnockoutJS(IE6+), AngularJS(IE9+), EmberJS(IE8+), WinJS(IE9+)), For more efficient and edge developers, use: `avalon.modern`.
 * No dependencies, less than 5000 lines of code and at 50KiB size of compressed code.
-* Support filter function using pipe char `|`, easy for output format.
-* Partial refresh are accurated to every text/attribute node.
-* No need to use selector, as the node to manipulate has all been binded and cached to the view refresh function at the initial scan procedure.
+* Support filter function using pipe symbol `|`, easy for output formatting.
+* Partial refreshing are accurated to every text/attribute node.
+* No need to use selector, as the node to manipulate has all been binded and cached to the view refreshing function at the initial scanning procedure.
 * You need to write DOM manipulation code slightly, either.
-* By using cascade render mechanism like CSS, ViewModels can render their views alternately.
-* While removing the node, the framework can detach the watch function of the corresponding views, reducing memory usage.
+* By using cascading render mechanism like CSS, ViewModels can render their views alternately.
+* While removing the node, the framework can detach the watching function of the corresponding views, reducing memory usage.
 * *Data Manipulation as DOM Manipulation*, actions on ViewModels will all be synchronized to the relevant Views and Models.
-* Ships with a builtin AMD loader.
+* Ships with a built-in AMD loader.
 
 ## To compress javascript files, run:
 
@@ -188,7 +193,7 @@ avalon.mobile.js，添加了触屏事件与fastclick支持，用于移动端；
 *  [入门教程](http://www.cnblogs.com/rubylouvre/p/3181291.html)
 *  [HTML5交流会有关avalon的PPT](http://vdisk.weibo.com/s/aMO9PyIQCnLOF/1375154475)
 *  [avalon最佳实践](http://www.cnblogs.com/rubylouvre/p/3385373.html)
-*  [《avalon探索之旅》系列视频教程](http://v.qq.com/search.html?pagetype=3&stj2=search.search&stag=txt.index&ms_key=Avalon%E6%8E%A2%E7%B4%A2%E4%B9%8B%E6%97%85)
+*  [《avalon探索之旅》系列视频教程](http://edu.51cto.com/course/course_id-2533-page-1.html)
 
 ### 运行github中的示例
 

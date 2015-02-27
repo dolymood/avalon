@@ -21,7 +21,7 @@ avalon.type = function(obj) { //取得目标的类型
 }
 
 var isFunction = function(fn) {
-    return serialize.call(fn) == "[object Function]"
+    return serialize.call(fn) === "[object Function]"
 }
 
 avalon.isFunction = isFunction
@@ -100,7 +100,7 @@ function _number(a, len) { //用于模拟slice, splice的效果
 avalon.mix({
     rword: rword,
     subscribers: subscribers,
-    version: 1.39,
+    version: 1.4,
     ui: {},
     log: log,
     slice: function(nodes, start, end) {
@@ -131,7 +131,7 @@ avalon.mix({
         }
         var index = -1,
                 length = Math.max(0, Math.ceil((end - start) / step)),
-                result = Array(length)
+                result = new Array(length)
         while (++index < length) {
             result[index] = start
             start += step
@@ -146,10 +146,11 @@ avalon.mix({
         if (typeof hook === "object") {
             type = hook.type
             if (hook.deel) {
-                fn = hook.deel(el, fn)
+                fn = hook.deel(el, type, fn, true)
             }
         }
-        el.addEventListener(type, fn, !!phase)
+        if (!fn.unbind)
+            el.addEventListener(type, fn, !!phase)
         return fn
     },
     /*卸载事件*/
@@ -159,6 +160,9 @@ avalon.mix({
         var callback = fn || noop
         if (typeof hook === "object") {
             type = hook.type
+            if (hook.deel) {
+                fn = hook.deel(el, type, fn, false)
+            }
         }
         el.removeEventListener(type, callback, !!phase)
     },
@@ -167,10 +171,10 @@ avalon.mix({
         if (node instanceof avalon) {
             node = node[0]
         }
-        var prop = /[_-]/.test(name) ? camelize(name) : name
+        var prop = /[_-]/.test(name) ? camelize(name) : name, fn
         name = avalon.cssName(prop) || prop
         if (value === void 0 || typeof value === "boolean") { //获取样式
-            var fn = cssHooks[prop + ":get"] || cssHooks["@:get"]
+            fn = cssHooks[prop + ":get"] || cssHooks["@:get"]
             if (name === "background") {
                 name = "backgroundColor"
             }
@@ -200,7 +204,7 @@ avalon.mix({
                 }
             } else {
                 for (i in obj) {
-                    if (obj.hasOwnProperty(i) && fn(i, obj[i] === false)) {
+                    if (obj.hasOwnProperty(i) && fn(i, obj[i]) === false) {
                         break
                     }
                 }

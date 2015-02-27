@@ -31,8 +31,8 @@ var scriptTypes = oneObject(["", "text/javascript", "text/ecmascript", "applicat
 var rnest = /<(?:tb|td|tf|th|tr|col|opt|leg|cap|area)/ //需要处理套嵌关系的标签
 var script = DOC.createElement("script")
 avalon.parseHTML = function(html) {
-    if (typeof html !== "string") {
-        html = html + ""
+    if (typeof html !== "string" ) {
+        return DOC.createDocumentFragment()
     }
     html = html.replace(rxhtml, "<$1></$2>").trim()
     var tag = (rtagName.exec(html) || ["", ""])[1].toLowerCase(),
@@ -66,7 +66,7 @@ avalon.parseHTML = function(html) {
     for (i = wrap[0]; i--; wrapper = wrapper.lastChild) {
     }
     if (!W3C) { //fix IE
-        var els = wrapper.getElementsByTagName("br"), n = els.length
+        els = wrapper.getElementsByTagName("br"), n = els.length
         while (el = els[--n]) {
             if (el.className === "msNoScope") {
                 el.parentNode.removeChild(el)

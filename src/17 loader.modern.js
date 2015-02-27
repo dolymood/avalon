@@ -270,7 +270,7 @@ new function() {
                 }
                 var node = DOC.createElement("a")
                 node.href = url
-                url = getFullUrl(node, "href")
+                url = node.href
                 if (baseElement) {
                     head.insertBefore(baseElement, head.firstChild)
                 }
@@ -307,10 +307,10 @@ new function() {
         }
     }
 
-    function checkFail(node, onError, fuckIE) {
+    function checkFail(node, onError) {
         var id = trimQuery(node.src) //检测是否死链
-        node.onload = node.onreadystatechange = node.onerror = null
-        if (onError || (fuckIE && modules[id] && !modules[id].state)) {
+        node.onload = node.onerror = null
+        if (onError) {
             setTimeout(function() {
                 head.removeChild(node)
                 node = null // 处理旧式IE下的循环引用问题
@@ -346,33 +346,20 @@ new function() {
         }
     }
 
-    var rreadyState = DOC.documentMode >= 8 ? /loaded/ : /complete|loaded/
     function loadJS(url, id, callback) {
         //通过script节点加载目标模块
         var node = DOC.createElement("script")
         node.className = subscribers //让getCurrentScript只处理类名为subscribers的script节点
-        var timeID
-        var supportLoad = "onload" in node
-        var onEvent = supportLoad ? "onload" : "onreadystatechange"
-        function onload() {
-            if (!"1"[0] && !timeID) {
-                return timeID = setTimeout(onload, 150)
+        node.onload = function() {
+            var factory = factorys.pop()
+            factory && factory.require(id)
+            if (callback) {
+                callback()
             }
-            if (supportLoad || rreadyState.test(node.readyState)) {
-                clearTimeout(timeID)
-                var factory = factorys.pop()
-                factory && factory.require(id)
-                if (callback) {
-                    callback()
-                }
-                if (checkFail(node, false, !supportLoad)) {
-                    log("debug: 已成功加载 " + url)
-                    id && loadings.push(id)
-                    checkDeps()
-                }
-            }
+            log("debug: 已成功加载 " + url)
+            id && loadings.push(id)
+            checkDeps()
         }
-        node[onEvent] = onload
         node.onerror = function() {
             checkFail(node, true)
         }
@@ -407,10 +394,7 @@ new function() {
         css: {
             load: function(name, req, onLoad) {
                 var url = req.url
-                var node = DOC.createElement("link")
-                node.rel = "stylesheet"
-                node.href = url
-                head.insertBefore(node, head.firstChild)
+                head.insertAdjacentHTML("afterBegin", '<link rel="stylesheet" href="'+ url +'">')
                 log("debug: 已成功加载 " + url)
                 onLoad()
             }
@@ -419,15 +403,13 @@ new function() {
             load: function(name, req, onLoad) {
                 var url = req.url
                 var xhr = getXHR()
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === 4) {
-                        var status = xhr.status;
-                        if (status > 399 && status < 600) {
-                            avalon.error(url + " 对应资源不存在或没有开启 CORS")
-                        } else {
-                            log("debug: 已成功加载 " + url)
-                            onLoad(xhr.responseText)
-                        }
+                xhr.onload = function() {
+                    var status = xhr.status;
+                    if (status > 399 && status < 600) {
+                        avalon.error(url + " 对应资源不存在或没有开启 CORS")
+                    } else {
+                        log("debug: 已成功加载 " + url)
+                        onLoad(xhr.responseText)
                     }
                 }
                 xhr.open("GET", url, true)
@@ -452,9 +434,6 @@ new function() {
         return  /^(?:[a-z]+:)?\/\//i.test(String(path))
     }
 
-    function getFullUrl(node, src) {
-        return"1"[0] ? node[src] : node.getAttribute(src, 4)
-    }
 
     function getCurrentScript() {
         // inspireb by https://github.com/samyk/jiagra/blob/master/jiagra.js
@@ -463,10 +442,6 @@ new function() {
             a.b.c() //强制报错,以便捕获e.stack
         } catch (e) { //safari5的sourceURL，firefox的fileName，它们的效果与e.stack不一样
             stack = e.stack
-            if (!stack && window.opera) {
-                //opera 9没有e.stack,但有e.Backtrace,但不能直接取得,需要对e对象转字符串进行抽取
-                stack = (String(e).match(/of linked script \S+/g) || []).join(" ")
-            }
         }
         if (stack) {
             /**e.stack最后一行在所有支持的浏览器大致如下:
@@ -487,7 +462,7 @@ new function() {
         var nodes = head.getElementsByTagName("script") //只在head标签中寻找
         for (var i = nodes.length, node; node = nodes[--i]; ) {
             if (node.className === subscribers && node.readyState === "interactive") {
-                var url = getFullUrl(node, "src")
+                var url = node.src
                 return node.className = trimQuery(url)
             }
         }
@@ -655,7 +630,7 @@ new function() {
         return g
     }
 
-    var mainNode = DOC.scripts[DOC.scripts.length - 1] 
+    var mainNode = DOC.scripts[DOC.scripts.length - 1]
     var dataMain = mainNode.getAttribute("data-main")
     if (dataMain) {
         plugins.baseUrl(dataMain)
@@ -663,7 +638,7 @@ new function() {
         kernel.baseUrl = href.slice(0, href.lastIndexOf("/") + 1)
         loadJS(href.replace(rjsext, "") + ".js")
     } else {
-        var loaderUrl = trimQuery(getFullUrl(mainNode, "src"))
+        var loaderUrl = trimQuery(mainNode.src)
         kernel.baseUrl = loaderUrl.slice(0, loaderUrl.lastIndexOf("/") + 1)
     }
 }
